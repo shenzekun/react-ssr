@@ -10,9 +10,11 @@
     "clear": "rimraf dist",
     "dev:server": "node server/server.js",
     "dev:client": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.client.js",
-    "lint": "eslint --ext .js --ext .jsx client/",
-    "precommit": "yarn run lint"
+    "lint": "eslint --ext .js --ext .jsx client/"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -45,6 +47,7 @@
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.18.0",
     "memory-fs": "^0.4.1",
+    "pre-commit": "^1.2.2",
     "react-hot-loader": "^4.1.2",
     "rimraf": "^2.6.2",
     "webpack-cli": "^2.0.15",
