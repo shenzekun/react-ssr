@@ -1,5 +1,22 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import { AppContainer } from 'react-hot-loader'; // eslint-disable-line
 import App from './App.jsx';
 
-ReactDom.render(<App />, document.getElementById('root'));
+const root = document.getElementById('root');
+const render = (Component) => {
+  ReactDom.render(
+    <AppContainer>
+      <Component />
+    </AppContainer>,
+    root,
+  );
+};
+render(App);
+
+if (module.hot) {
+  module.hot.accept('./App.jsx', () => {
+    const NextApp = require('./App.jsx').default;
+    render(NextApp);
+  });
+}
