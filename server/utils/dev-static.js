@@ -2,53 +2,64 @@ const axios = require('axios')
 const webpack = require('webpack')
 const serverConfig = require('../../build/webpack.config.server')
 const path = require('path')
-const MemoryFs = require('memory-fs')
+const MemoryFS = require('memory-fs')
 const proxy = require('http-proxy-middleware')
-const ReactDomServer = require('react-dom/server')
+const serverRunder = require('./server-render')
 
-const getTemplete = () => {
+const getTemplate = () => {
   return new Promise((resolve, reject) => {
-    axios
-      .get('http://localhost:8888/public/index.html')
-      .then(res => {
+    axios.get('http://localhost:8888/public/server.ejs')
+      .then((res) => {
         resolve(res.data)
-      })
-      .catch(reject)
+      }).catch(reject)
   })
 }
 
-const Module = module.constructor
-const mfs = new MemoryFs()
+const nativeModule = require('module')
+const vm = require('vm')
+const getModuleFromString = (bundle, filename) => {
+  const m = {exports: {}}
+  const wrapper = nativeModule.wrap(bundle)
+  const Script = new vm.Script(wrapper, {
+    filename: filename,
+    displayErrors: true
+  })
+  const result = Script.runInThisContext()
+  result.call(m.exports, m.exports, require, m)
+  return m
+}
+
+const mfs = new MemoryFS()
+serverConfig.mode = 'development'
 const serverCompiler = webpack(serverConfig)
 serverCompiler.outputFileSystem = mfs
+
 let serverBundle
 serverCompiler.watch({}, (err, stats) => {
   if (err) throw err
+
   stats = stats.toJson()
-  stats.errors.forEach(err => {
-    console.error(err)
-  })
-  stats.warnings.forEach(warning => {
-    console.warn(warning)
-  })
-  const bundlePath = path.join(serverConfig.output.path, serverConfig.output.filename)
+  stats.errors.forEach(err => console.log(err))
+  stats.warnings.forEach(warning => console.log(warning))
+  const bundlePath = path.join(
+    serverConfig.output.path,
+    serverConfig.output.filename
+  )
   const bundle = mfs.readFileSync(bundlePath, 'utf-8')
-  const m = new Module()
-  m._compile(bundle, 'server-entry.js') // 一定要加上名字
-  serverBundle = m.exports.default
+  const m = getModuleFromString(bundle, 'server-entry.js')
+  serverBundle = m.exports
 })
 
 module.exports = function (app) {
-  app.use(
-    '/pubilc',
-    proxy({
-      target: 'http://localhost:8888'
-    })
-  )
-  app.get('*', function (req, res) {
-    getTemplete().then(templete => {
-      const content = ReactDomServer.renderToString(serverBundle)
-      res.send(templete.replace('<!-- app -->', content))
-    })
+  app.use('/public', proxy({
+    target: 'http://localhost:8888'
+  }))
+  app.get('*', function (req, res, next) {
+    if (!serverBundle) {
+      return res.send('refresh later')
+    }
+    getTemplate().then((template) => {
+      return serverRunder(serverBundle, template, req, res)
+    }).catch(next)
   })
 }

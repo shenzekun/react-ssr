@@ -13,12 +13,13 @@ const config = webpackMerge(baseConfig, {
   output: {
     filename: '[name].[hash].js'
   },
-  resolve: {
-    extensions: ['.js', '.jsx']
-  },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, '../client/template.html')
+    }),
+    new HtmlWebpackPlugin({
+      template: '!!ejs-compiled-loader!' + path.join(__dirname, '../client/server.template.ejs'),
+      filename: 'server.ejs'
     })
   ]
   // resolve: {
@@ -31,6 +32,7 @@ const config = webpackMerge(baseConfig, {
 })
 
 if (isDev) {
+  config.devtool = '#cheap-module-eval-source-map'
   config.mode = 'development'
   config.entry = {
     app: ['react-hot-loader/patch', path.join(__dirname, '../client/app.js')]
@@ -40,7 +42,7 @@ if (isDev) {
     host: '0.0.0.0',
     compress: true,
     port: '8888',
-    contentBase: path.join(__dirname, '../dist'),
+    // contentBase: path.join(__dirname, '../dist'),
     hot: true,
     overlay: {
       errors: true
@@ -48,6 +50,9 @@ if (isDev) {
     publicPath: '/public/',
     historyApiFallback: {
       index: '/public/index.html'
+    },
+    proxy: {
+      '/api': 'http://localhost:3333'
     }
   }
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
