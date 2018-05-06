@@ -6,7 +6,9 @@
   "globalDependencies": {
     "axios": "registry:dt/axios#0.9.1+20161016142654",
     "classnames": "registry:dt/classnames#0.0.0+20161113184211",
+    "dateformat": "registry:dt/dateformat#1.0.12+20161005184000",
     "express-session": "registry:dt/express-session#0.0.0+20161119044246",
+    "marked": "registry:dt/marked#0.0.0+20160510002910",
     "query-string": "registry:dt/query-string#4.3.0+20170315104407",
     "react-router": "registry:dt/react-router#4.0.0+20170323201651"
   }

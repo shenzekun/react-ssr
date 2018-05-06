@@ -3,7 +3,7 @@ import ReactDom from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'mobx-react';
 import { MuiThemeProvider } from 'material-ui';
-import { lightBlue, pink } from 'material-ui/colors';
+import { pink } from 'material-ui/colors';
 import createMuiTheme from 'material-ui/styles/createMuiTheme';
 import AppState from './store/app-state';
 import TopicStore from './store/topic-store';
@@ -13,7 +13,7 @@ import App from './views/App';
 const theme = createMuiTheme({
   palette: {
     primary: pink,
-    accent: lightBlue,
+    accent: pink,
     type: 'light',
   },
 });
@@ -36,6 +36,7 @@ const createApp = (TheApp) => {
 };
 
 const appState = new AppState(initialState.appState);
+appState.init(initialState.appState)
 const topicStore = new TopicStore(initialState.topicStore);
 const render = (Component) => {
   ReactDom.render(

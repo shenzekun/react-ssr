@@ -29,7 +29,7 @@ module.exports = (bundle, template, req, res) => {
   const sheetsRegistry = new SheetsRegistry()
   const theme = createMuiTheme({
     palette: {
-      primary: colors.blue,
+      primary: colors.pink,
       secondary: colors.pink,
       type: 'light'
     }

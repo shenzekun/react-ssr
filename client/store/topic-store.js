@@ -126,9 +126,11 @@ export default class TopicStore {
           this.createdTopic.push(new Topic(topic));
           resolve();
         } else {
-          reject();
+          reject(resp);
         }
-      }).catch(reject);
+      }).catch((err) => {
+        reject(err)
+      });
     });
   }
   toJson() {

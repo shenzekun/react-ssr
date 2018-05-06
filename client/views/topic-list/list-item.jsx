@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import dateformat from 'dateformat';
 import ListItem from 'material-ui/List/ListItem';
 import ListItemAvatar from 'material-ui/List/ListItemAvatar';
 import ListItemText from 'material-ui/List/ListItemText';
@@ -34,7 +35,7 @@ const Secondary = ({ classes, topic }) => (
       <span>/</span>
       <span>{topic.visit_count}</span>
     </span>
-    <span>{topic.create_at}</span>
+    <span>{dateformat(topic.create_at, 'yy年mm月dd日')}</span>
   </span>
 );
 Secondary.propTypes = {

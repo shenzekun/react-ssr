@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:client": "webpack --config build/webpack.config.client.js",
-    "build:server": "webpack --config build/webpack.config.server.js",
+    "build:client": "webpack --mode production --config build/webpack.config.client.js",
+    "build:server": "webpack --mode production --config build/webpack.config.server.js",
     "build": "yarn run clear && yarn run build:client && yarn run build:server",
     "clear": "rimraf dist",
     "dev:server": "cross-env NODE_ENV=development nodemon server/server.js",
     "dev:client": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.client.js",
-    "lint": "eslint --ext .js --ext .jsx client/"
+    "lint": "eslint --ext .js --ext .jsx client/",
+    "start": "cross-env NODE_ENV=production node server/server.js"
   },
   "pre-commit": [
     "lint"
@@ -22,12 +23,14 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "classnames": "^2.2.5",
+    "dateformat": "^3.0.3",
     "ejs": "^2.5.9",
     "ejs-compiled-loader": "^1.1.0",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "jss": "^9.8.1",
     "jss-preset-default": "^4.3.0",
+    "marked": "^0.3.19",
     "material-ui": "^1.0.0-beta.44",
     "material-ui-icons": "^1.0.0-beta.36",
     "mobx": "^4.2.0",
@@ -41,6 +44,7 @@
     "react-jss": "^8.4.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-simplemde-editor": "^3.6.14",
     "serialize-javascript": "^1.5.0",
     "serve-favicon": "^2.5.0",
     "webpack": "^4.6.0"
@@ -66,9 +70,11 @@
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-react": "^7.7.0",
     "eslint-plugin-standard": "^3.1.0",
+    "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.18.0",
     "memory-fs": "^0.4.1",
+    "name-all-modules-plugin": "^1.0.1",
     "nodemon": "^1.17.3",
     "pre-commit": "^1.2.2",
     "react-hot-loader": "^4.1.2",
